@@ -20,33 +20,31 @@ router.post('/notifier/on', koaBody(), async (ctx, next) => {
   const deviceToken = ctx.request.body.device_token
   const oauthToken = ctx.request.body.oauth_token
   const oauthTokenSecret = ctx.request.body.oauth_token_secret
+  const id = `${deviceToken}${oauthToken}`
 
   // Validate
   if (!(deviceToken && oauthToken && oauthTokenSecret)) ctx.body = 'invalid'
-
+  else if (process.clients[id] && process.clients[id].streamer) ctx.body = 'on'
   else {
-    const streamer = new Streamer({oauthToken, oauthTokenSecret})
-    const id = `${deviceToken}${oauthToken}`
-    streamer.deviceToken = deviceToken
+    process.clients[id] = {}
+    process.clients[id].streamer = new Streamer({oauthToken, oauthTokenSecret})
+    process.clients[id].streamer.deviceToken = deviceToken
 
     // Mentions
-    streamer.on('mention', res => {
+    process.clients[id].streamer.on('mention', res => {
       APN.send(`@${res.by} 提到了你`, deviceToken)
     })
 
     // Reply
-    streamer.on('reply', res => {
+    process.clients[id].streamer.on('reply', res => {
       APN.send(`@${res.by} 回复了你`, deviceToken)
     })
-
-    process.clients[id] = {}
-    process.clients[id].streamer = streamer
 
     ctx.body = 'on'
   }
 })
 
-router.post('/notifier/off', async (ctx, next) => {
+router.post('/notifier/off', koaBody(), async (ctx, next) => {
   const deviceToken = ctx.request.body.device_token
   const oauthToken = ctx.request.body.oauth_token
   const id = `${deviceToken}${oauthToken}`
