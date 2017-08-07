@@ -45,13 +45,30 @@ class Streamer extends EventEmitter {
     this.proto.on('message', data => {
       if (data.is_mentioned) {
         this.emit('mention', {
-          by: data.mentioned_by
+          by: data.mentioned_by,
+          status: data.object
         })
       }
 
       if (data.is_replied) {
         this.emit('reply', {
-          by: data.replied_by
+          by: data.replied_by,
+          status: data.object
+        })
+      }
+    })
+
+    this.proto.on('fav', data => {
+      if (data.action === 'create') {
+        this.emit('add-fav', {
+          by: data.source.name,
+          status: data.object
+        })
+      }
+      if (data.action === 'delete') {
+        this.emit('del-fav', {
+          by: data.source.name,
+          status: data.object
         })
       }
     })

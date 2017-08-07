@@ -20,11 +20,11 @@ const options = {
 
 // APN Provider
 const apnProvider = new apn.Provider(options)
-const note = new apn.Notification()
-note.badge = 0
-note.topic = 'me.catt.maofan'
 
 APN.send = (message, deviceToken) => {
+  const note = new apn.Notification()
+  note.badge = 0
+  note.topic = 'me.catt.maofan'
   note.alert = message
   apnProvider
     .send(note, deviceToken)

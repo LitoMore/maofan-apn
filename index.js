@@ -34,12 +34,22 @@ router.post('/notifier/on', koaBody(), async (ctx, next) => {
 
     // Mentions
     process.clients[id].streamer.on('mention', res => {
-      APN.send(`@${res.by} 提到了你`, deviceToken)
+      APN.send(`@${res.by} 提到了你 ${res.status.text}`, deviceToken)
     })
 
     // Reply
     process.clients[id].streamer.on('reply', res => {
-      APN.send(`@${res.by} 回复了你`, deviceToken)
+      APN.send(`@${res.by} 回复了你 ${res.status.text}`, deviceToken)
+    })
+
+    // Add fav
+    process.clients[id].streamer.on('add-fav', res => {
+      APN.send(`@${res.by} 收藏了 ${res.status.text}`, deviceToken)
+    })
+
+    // Del fav
+    process.clients[id].streamer.on('del-fav', res => {
+      APN.send(`@${res.by} 取消收藏了 ${res.status.text}`, deviceToken)
     })
 
     ctx.body = 'on'
