@@ -12,6 +12,7 @@ Turn on streamer
 
 - `device_token`
 - `oauth_token`
+- `oauth_token_secret`
 
 #### Response
 
@@ -25,7 +26,6 @@ Turn off streamer
 
 - `device_token`
 - `oauth_token`
-- `oauth_token_secret`
 
 #### Response
 
