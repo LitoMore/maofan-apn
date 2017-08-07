@@ -30,7 +30,7 @@ class Streamer extends EventEmitter {
     this._reg()
     this.timer = retimer(() => {
       this.stop()
-    }, 30000000)
+    }, 604800)
   }
 
   _reg () {
@@ -63,7 +63,7 @@ class Streamer extends EventEmitter {
 
   renew () {
     if (!this.proto.is_streaming) this._init()
-    this.timer.reschedule(30000000)
+    this.timer.reschedule(604800)
   }
 
   stop () {
