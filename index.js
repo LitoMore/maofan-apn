@@ -8,6 +8,8 @@ const koaBody = require('koa-body')
 const Streamer = require('./utils/streamer')
 const APN = require('./utils/apn')
 
+const {PORT} = require('./config')
+
 // Clients
 process.clients = {}
 
@@ -73,7 +75,7 @@ app
   .use(router.routes())
   .use(router.allowedMethods())
 
-app.listen(3000)
+app.listen(PORT)
 
 // Log
-console.log(chalk.green('Maofan notifier startup, listening on 3000'))
+console.log(chalk.green(`Maofan notifier startup, listening on ${PORT}`))
