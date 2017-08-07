@@ -1,2 +1,2 @@
 # maofan-apn
-APN service for Maofan 2
+APN service for Maofan
