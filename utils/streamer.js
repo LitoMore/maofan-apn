@@ -26,11 +26,17 @@ class Streamer extends EventEmitter {
       oauth_token: this.oauth_token,
       oauth_token_secret: this.oauth_token_secret
     })
-    this.proto = ff.stream()
-    this._reg()
-    this.timer = retimer(() => {
-      this.stop()
-    }, 604800)
+    ff.get('/account/verify_credentials', {}, (err, res) => {
+      if (err) console.log(err)
+      else {
+        this.id = res.id
+        this.proto = ff.stream()
+        this._reg()
+        this.timer = retimer(() => {
+          this.stop()
+        }, 604800)
+      }
+    })
   }
 
   _reg () {
@@ -43,14 +49,14 @@ class Streamer extends EventEmitter {
     })
 
     this.proto.on('message', data => {
-      if (data.is_mentioned) {
+      if (data.is_mentioned && this.id !== data.source.id) {
         this.emit('mention', {
           by: data.mentioned_by,
           status: data.object
         })
       }
 
-      if (data.is_replied) {
+      if (data.is_replied && this.id !== data.source.id) {
         this.emit('reply', {
           by: data.replied_by,
           status: data.object
