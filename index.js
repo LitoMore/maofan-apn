@@ -19,36 +19,46 @@ const router = new Router()
 
 // Router
 router.post('/notifier/on', koaBody(), async (ctx, next) => {
+  console.log('POST /notifier/on')
   const deviceToken = ctx.request.body.device_token
   const oauthToken = ctx.request.body.oauth_token
   const oauthTokenSecret = ctx.request.body.oauth_token_secret
   const id = `${deviceToken}${oauthToken}`
 
   // Validate
-  if (!(deviceToken && oauthToken && oauthTokenSecret)) ctx.body = 'invalid'
-  else if (process.clients[id] && process.clients[id].streamer) ctx.body = 'on'
-  else {
+  if (!(deviceToken && oauthToken && oauthTokenSecret)) {
+    console.log('invalid parameters')
+    ctx.body = 'invalid'
+  } else if (process.clients[id] && process.clients[id].streamer) {
+    console.log('streamer already on')
+    ctx.body = 'on'
+  } else {
+    console.log('create streamer')
     process.clients[id] = {}
     process.clients[id].streamer = new Streamer({oauthToken, oauthTokenSecret})
     process.clients[id].streamer.deviceToken = deviceToken
 
     // Mentions
     process.clients[id].streamer.on('mention', res => {
+      console.log('mention event')
       APN.send(`@${res.by} 提到了你 ${res.status.text}`, deviceToken)
     })
 
     // Reply
     process.clients[id].streamer.on('reply', res => {
+      console.log('reply event')
       APN.send(`@${res.by} 回复了你 ${res.status.text}`, deviceToken)
     })
 
     // Add fav
     process.clients[id].streamer.on('add-fav', res => {
+      console.log('add-fav event')
       APN.send(`@${res.by} 收藏了 ${res.status.text}`, deviceToken)
     })
 
     // Del fav
     process.clients[id].streamer.on('del-fav', res => {
+      console.log('del-fav event')
       APN.send(`@${res.by} 取消收藏了 ${res.status.text}`, deviceToken)
     })
 

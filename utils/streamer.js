@@ -33,7 +33,7 @@ class Streamer extends EventEmitter {
         this.proto = ff.stream()
         this._reg()
         this.timer = retimer(() => {
-          this.stop()
+          // this.stop()
         }, 604800)
       }
     })
@@ -41,10 +41,12 @@ class Streamer extends EventEmitter {
 
   _reg () {
     this.proto.on('connected', () => {
+      console.log(this.id, 'connected')
       this.emit('connected')
     })
 
     this.proto.on('close', () => {
+      console.log(this.id, 'close')
       this.emit('close')
     })
 
@@ -80,7 +82,7 @@ class Streamer extends EventEmitter {
     })
 
     this.proto.on('error', data => {
-      console.log('error')
+      console.log(this.id, 'error')
     })
   }
 
