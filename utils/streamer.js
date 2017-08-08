@@ -95,7 +95,7 @@ class Streamer extends EventEmitter {
   }
 
   renew () {
-    if (!this.proto.is_streaming && this.is_stop) this._init()
+    if (!this.proto.is_streaming && !this.is_stop) this._init()
     this.renewTimer.reschedule(10000)
     this.stopTimer.reschedule(604800000)
   }
