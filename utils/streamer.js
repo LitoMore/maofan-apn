@@ -13,6 +13,7 @@ class Streamer extends EventEmitter {
   constructor (tokens) {
     super()
     tokens = tokens || {}
+    this.is_stop = false
     this.oauth_token = tokens.oauthToken
     this.oauth_token_secret = tokens.oauthTokenSecret
     this._init()
@@ -32,9 +33,12 @@ class Streamer extends EventEmitter {
         this.id = res.id
         this.proto = ff.stream()
         this._reg()
-        this.timer = retimer(() => {
-          // this.stop()
-        }, 604800)
+        this.stopTimer = retimer(() => {
+          this.stop()
+        }, 604800000)
+        this.renewTimer = retimer(() => {
+          this.renew()
+        }, 10000)
       }
     })
   }
@@ -84,14 +88,21 @@ class Streamer extends EventEmitter {
     this.proto.on('error', data => {
       console.log(this.id, 'error')
     })
+
+    this.proto.on('close', data => {
+      console.log(this.id, 'streaming closed')
+    })
   }
 
   renew () {
-    if (!this.proto.is_streaming) this._init()
-    this.timer.reschedule(604800)
+    if (!this.proto.is_streaming && !this.is_stop) {
+      this._init()
+      this.renewTimer.reschedule(10000)
+    }
+    this.stopTimer.reschedule(604800000)
   }
-
   stop () {
+    this.is_stop = true
     this.proto.stop()
   }
 }
