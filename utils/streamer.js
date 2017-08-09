@@ -20,18 +20,18 @@ class Streamer extends EventEmitter {
   }
 
   _init () {
-    const ff = new Fanfou({
+    this.ff = new Fanfou({
       auth_type: 'oauth',
       consumer_key: CONSUMER_KEY,
       consumer_secret: CONSUMER_SECRET,
       oauth_token: this.oauth_token,
       oauth_token_secret: this.oauth_token_secret
     })
-    ff.get('/account/verify_credentials', {}, (err, res) => {
+    this.ff.get('/account/verify_credentials', {}, (err, res) => {
       if (err) console.log(err)
       else {
         this.id = res.id
-        this.proto = ff.stream()
+        this.proto = this.ff.stream()
         this._reg()
         this.stopTimer = retimer(() => {
           this.stop()
@@ -95,13 +95,18 @@ class Streamer extends EventEmitter {
   }
 
   renew () {
-    if (!this.proto.is_streaming && !this.is_stop) this._init()
+    if (!this.ff.is_streaming && !this.is_stop) {
+      console.log(this.id, 'renew')
+      this._init()
+    }
     this.renewTimer.reschedule(10000)
     this.stopTimer.reschedule(604800000)
   }
+
   stop () {
     this.is_stop = true
     this.proto.stop()
+    console.log(this.id, 'stop')
   }
 }
 
