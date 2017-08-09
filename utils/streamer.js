@@ -3,6 +3,7 @@
 const {EventEmitter} = require('events')
 const Fanfou = require('fanfou-sdk')
 const retimer = require('retimer')
+const log = require('fancy-log')
 
 const {
   CONSUMER_KEY,
@@ -28,7 +29,7 @@ class Streamer extends EventEmitter {
       oauth_token_secret: this.oauth_token_secret
     })
     this.ff.get('/account/verify_credentials', {}, (err, res) => {
-      if (err) console.log(err)
+      if (err) log(err)
       else {
         this.id = res.id
         this.proto = this.ff.stream()
@@ -38,19 +39,19 @@ class Streamer extends EventEmitter {
         }, 604800000)
         this.renewTimer = retimer(() => {
           this.renew()
-        }, 10000)
+        }, 60000)
       }
     })
   }
 
   _reg () {
     this.proto.on('connected', () => {
-      console.log(this.id, 'connected')
+      log(this.id, 'connected')
       this.emit('connected')
     })
 
     this.proto.on('close', () => {
-      console.log(this.id, 'close')
+      log(this.id, 'close')
       this.emit('close')
     })
 
@@ -86,27 +87,28 @@ class Streamer extends EventEmitter {
     })
 
     this.proto.on('error', data => {
-      console.log(this.id, 'error')
+      log(this.id, 'error')
     })
 
     this.proto.on('close', data => {
-      console.log(this.id, 'streaming closed')
+      log(this.id, 'streaming closed')
     })
   }
 
   renew () {
     if (!this.ff.is_streaming && !this.is_stop) {
-      console.log(this.id, 'renew')
+      log(this.id, 'renew')
       this._init()
     }
-    this.renewTimer.reschedule(10000)
+    this.renewTimer.reschedule(60000)
+    log(this)
     this.stopTimer.reschedule(604800000)
   }
 
   stop () {
     this.is_stop = true
     this.proto.stop()
-    console.log(this.id, 'stop')
+    log(this.id, 'stop')
   }
 }
 
