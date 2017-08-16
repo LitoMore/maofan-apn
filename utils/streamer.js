@@ -2,7 +2,6 @@
 
 const {EventEmitter} = require('events')
 const Fanfou = require('fanfou-sdk')
-const retimer = require('retimer')
 const log = require('fancy-log')
 
 const {
@@ -14,9 +13,9 @@ class Streamer extends EventEmitter {
   constructor (tokens) {
     super()
     tokens = tokens || {}
-    this.is_stop = false
-    this.oauth_token = tokens.oauthToken
-    this.oauth_token_secret = tokens.oauthTokenSecret
+    this.isStreaming = false
+    this.oauthToken = tokens.oauthToken
+    this.oauthTokenSecret = tokens.oauthTokenSecret
     this._init()
   }
 
@@ -25,8 +24,8 @@ class Streamer extends EventEmitter {
       auth_type: 'oauth',
       consumer_key: CONSUMER_KEY,
       consumer_secret: CONSUMER_SECRET,
-      oauth_token: this.oauth_token,
-      oauth_token_secret: this.oauth_token_secret
+      oauth_token: this.oauthToken,
+      oauth_token_secret: this.oauthTokenSecret
     })
     this.ff.get('/account/verify_credentials', {}, (err, res) => {
       if (err) log(err)
@@ -34,24 +33,18 @@ class Streamer extends EventEmitter {
         this.id = res.id
         this.proto = this.ff.stream()
         this._reg()
-        this.stopTimer = retimer(() => {
-          this.stop()
-        }, 604800000)
-        this.renewTimer = retimer(() => {
-          this.renew()
-        }, 60000)
       }
     })
   }
 
   _reg () {
     this.proto.on('connected', () => {
-      log(this.id, 'connected')
+      this.isStreaming = true
       this.emit('connected')
     })
 
     this.proto.on('close', () => {
-      log(this.id, 'close')
+      this.isStreaming = false
       this.emit('close')
     })
 
@@ -87,26 +80,21 @@ class Streamer extends EventEmitter {
     })
 
     this.proto.on('error', data => {
+      this.isStreaming = false
       log(this.id, 'error')
     })
 
     this.proto.on('close', data => {
+      this.isStreaming = false
       log(this.id, 'streaming closed')
     })
   }
 
   renew () {
-    if (!this.ff.is_streaming && !this.is_stop) {
-      log(this.id, 'renew')
-      this._init()
-    }
-    this.renewTimer.reschedule(60000)
-    log(this)
-    this.stopTimer.reschedule(604800000)
+    this._init()
   }
 
   stop () {
-    this.is_stop = true
     this.proto.stop()
     log(this.id, 'stop')
   }

@@ -3,11 +3,14 @@
 // Requirement
 const Koa = require('koa')
 const chalk = require('chalk')
-const Router = require('koa-router')
+const log = require('fancy-log')
 const koaBody = require('koa-body')
+const Router = require('koa-router')
+const symbols = require('log-symbols')
+const schedule = require('node-schedule')
+
 const Streamer = require('./utils/streamer')
 const APN = require('./utils/apn')
-const log = require('fancy-log')
 
 const {PORT} = require('./config')
 
@@ -38,9 +41,14 @@ router.post('/notifier/on', koaBody(), async (ctx, next) => {
     process.clients[id] = {}
     process.clients[id].streamer = new Streamer({oauthToken, oauthTokenSecret})
     process.clients[id].streamer.deviceToken = deviceToken
+    process.clients[id].user = {
+      deviceToken,
+      oauthToken,
+      oauthTokenSecret
+    }
 
     // Mentions
-    process.clients[id].streamer.on('mention', res => {
+    .process.clients[id].streamer.on('mention', res => {
       ('mention event')
       APN.send(`@${res.by} 提到了你 ${res.status.text}`, deviceToken)
     })
@@ -100,3 +108,14 @@ app.listen(PORT)
 
 // Log
 log(chalk.green(`Maofan notifier startup, listening on ${PORT}`))
+
+// Schedule - Check every minute
+process.scheduleJob = schedule.scheduleJob('* * * * *', () => {
+  for (const client in process.clients) {
+    if (client.streamer.isStreaming) {
+      console.log(` ${symbols.success} ${client.streamer.id} is streaming`)
+    } else {
+      console.log(` ${symbols.error} ${client.streamer.id} is not streaming`)
+    }
+  }
+})
