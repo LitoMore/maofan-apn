@@ -33,7 +33,7 @@ router.post('/notifier/on', koaBody(), async (ctx, next) => {
   if (!(deviceToken && oauthToken && oauthTokenSecret)) {
     log('invalid parameters')
     ctx.body = 'invalid'
-  } else if (process.clients[id] && process.clients[id].streamer) {
+  } else if (process.clients[id] && process.clients[id].streamer && process.clients[id].streamer.isStreaming) {
     log('streamer already on')
     ctx.body = 'on'
   } else {
@@ -81,7 +81,7 @@ router.post('/notifier/off', koaBody(), async (ctx, next) => {
   const id = `${deviceToken}${oauthToken}`
 
   if (!(deviceToken && oauthToken)) ctx.body = 'invalid'
-  else if (process.clients[id] && process.clients[id].streamer) {
+  else if (process.clients[id] && process.clients[id].streamer && process.clients.streamer.isStreaming) {
     process.clients[id].streamer.stop()
     delete process.clients[id]
     ctx.body = 'off'
@@ -94,7 +94,7 @@ router.get('/notifier/check', async (ctx, next) => {
   const id = `${deviceToken}${oauthToken}`
 
   if (!(deviceToken && oauthToken)) ctx.body = 'invalid'
-  else if (process.clients[id] && process.clients[id].streamer) {
+  else if (process.clients[id] && process.clients[id].streamer && process.clients.streamer.isStreaming) {
     process.clients[id].streamer.renew()
     ctx.body = 'on'
   } else ctx.body = 'off'
