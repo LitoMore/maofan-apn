@@ -2,47 +2,34 @@
 
 APN service for Maofan
 
-## API
+## POST /notifier/on
 
-### POST /notifier/on
+### Request Parameters
 
-Turn on streamer
+| Name | Description |
+| :-: | :-- |
+| device_token | Device token from app as a string |
+| oauth_token | Fanfou OAuth token |
+| oauth_token | Fanfou OAuth token secret |
 
-#### Parameters
+## POST /notifier/off
 
-- `device_token`
-- `oauth_token`
-- `oauth_token_secret`
+### Request Parameters
 
-#### Response
+| Name | Description |
+| :-: | :-- |
+| device_token | Device token from app as a string |
+| oauth_token | Fanfou OAuth token |
+| oauth_token | Fanfou OAuth token secret |
 
-`on` or `invalid`
+## GET /notifier/check
 
-### POST /notifier/off
+### Request Parameters
 
-Turn off streamer
-
-#### Parameters
-
-- `device_token`
-- `oauth_token`
-
-#### Response
-
-`off` or `invalid`
-
-### GET /notifier/check
-
-Check streamer status
-
-#### Parameters
-
-- `device_token`
-- `oauth_token`
-
-#### Response
-
-`on`, `off` or `invalid`
+| Name | Description |
+| :-: | :-- |
+| device_token | Device token from app as a string |
+| oauth_token | Fanfou OAuth token |
 
 ## License
 
