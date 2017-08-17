@@ -49,7 +49,7 @@ router.post('/notifier/on', koaBody(), async (ctx, next) => {
 
     // Mentions
     process.clients[id].streamer.on('mention', res => {
-      ('mention event')
+      log('mention event')
       APN.send(`@${res.by} 提到了你 ${res.status.text}`, deviceToken)
     })
 

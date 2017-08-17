@@ -32,17 +32,13 @@ class Streamer extends EventEmitter {
       else {
         this.id = res.id
         this.proto = this.ff.stream()
+        if (this.ff.is_streaming) this.isStreaming = true
         this._reg()
       }
     })
   }
 
   _reg () {
-    this.proto.on('connected', () => {
-      this.isStreaming = true
-      this.emit('connected')
-    })
-
     this.proto.on('close', () => {
       this.isStreaming = false
       this.emit('close')
