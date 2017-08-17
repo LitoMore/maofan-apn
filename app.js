@@ -48,7 +48,7 @@ router.post('/notifier/on', koaBody(), async (ctx, next) => {
     }
 
     // Mentions
-    .process.clients[id].streamer.on('mention', res => {
+    process.clients[id].streamer.on('mention', res => {
       ('mention event')
       APN.send(`@${res.by} 提到了你 ${res.status.text}`, deviceToken)
     })
@@ -110,12 +110,25 @@ app.listen(PORT)
 log(chalk.green(`Maofan notifier startup, listening on ${PORT}`))
 
 // Schedule - Check every minute
-process.scheduleJob = schedule.scheduleJob('* * * * *', () => {
-  for (const client in process.clients) {
+process.job1 = schedule.scheduleJob('* * * * *', () => {
+  for (let key in process.clients) {
+    const client = process.clients[key]
     if (client.streamer.isStreaming) {
-      console.log(` ${symbols.success} ${client.streamer.id} is streaming`)
+      log(` ${symbols.success} ${client.streamer.id} is streaming`)
     } else {
-      console.log(` ${symbols.error} ${client.streamer.id} is not streaming`)
+      log(` ${symbols.error} ${client.streamer.id} is not streaming`)
+    }
+  }
+})
+
+process.job2 = schedule.scheduleJob('*/15 * * * *', () => {
+  for (let key in process.clients) {
+    const client = process.clients[key]
+    const {deviceToken} = client.streamer
+    if (client.streamer.isStreaming) {
+      APN.send('[测试消息] Streaming 正常', deviceToken)
+    } else {
+      APN.send('[测试消息] Streaming 断开', deviceToken)
     }
   }
 })

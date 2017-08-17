@@ -1,6 +1,8 @@
 'use strict'
 
 const apn = require('apn')
+const log = require('fancy-log')
+const symbols = require('log-symbols')
 
 const {
   KEY_ID,
@@ -29,7 +31,12 @@ APN.send = (message, deviceToken) => {
   apnProvider
     .send(note, deviceToken)
     .then(result => {
-      console.log(result)
+      if (!result.failed.length) {
+        log(` ${symbols.success} ${deviceToken} sent.`)
+      } else {
+        log(` ${symbols.error} ${deviceToken} error.`)
+        console.log(result.failed)
+      }
       apnProvider.shutdown()
     })
 }
