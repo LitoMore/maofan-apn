@@ -4,6 +4,7 @@
   "description": "APN service for Maofan 2",
   "main": "app.js",
   "scripts": {
+    "start": "node app.js",
     "test": "standard"
   },
   "repository": {
