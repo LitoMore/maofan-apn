@@ -9,10 +9,14 @@ const Router = require('koa-router')
 const symbols = require('log-symbols')
 const schedule = require('node-schedule')
 
-const Streamer = require('./utils/streamer')
+const Streamer = require('fanfou-streamer')
 const APN = require('./utils/apn')
 
-const {PORT} = require('./config')
+const {
+  PORT,
+  CONSUMER_KEY,
+  CONSUMER_SECRET
+} = require('./config')
 
 // Clients
 process.clients = {}
@@ -39,8 +43,13 @@ router.post('/notifier/on', koaBody(), async (ctx, next) => {
   } else {
     log('create streamer')
     process.clients[id] = {}
-    process.clients[id].streamer = new Streamer({oauthToken, oauthTokenSecret})
-    process.clients[id].streamer.deviceToken = deviceToken
+    process.clients[id].streamer = new Streamer({
+      consumerKey: CONSUMER_KEY,
+      consumerSecret: CONSUMER_SECRET,
+      oauthToken,
+      oauthTokenSecret
+    })
+    process.client[id].streamer.start()
     process.clients[id].user = {
       deviceToken,
       oauthToken,
@@ -48,27 +57,33 @@ router.post('/notifier/on', koaBody(), async (ctx, next) => {
     }
 
     // Mentions
-    process.clients[id].streamer.on('mention', res => {
+    process.clients[id].streamer.on('message.mention', res => {
       log('mention event')
-      APN.send(`@${res.by} 提到了你 ${res.status.text}`, deviceToken)
+      APN.send(`@${res.source.screen_name} 提到了你 ${res.object.text}`, deviceToken)
     })
 
     // Reply
-    process.clients[id].streamer.on('reply', res => {
+    process.clients[id].streamer.on('message.reply', res => {
       log('reply event')
-      APN.send(`@${res.by} 回复了你 ${res.status.text}`, deviceToken)
+      APN.send(`@${res.source.screen_name} 回复了你 ${res.object.text}`, deviceToken)
+    })
+
+    // Repost
+    process.clients[id].streamer.on('message.repost', res => {
+      log('repost event')
+      APN.send(`@${res.source.screen_name} 转发了 ${res.object.text}`, deviceToken)
     })
 
     // Add fav
-    process.clients[id].streamer.on('add-fav', res => {
+    process.clients[id].streamer.on('fav.create', res => {
       log('add-fav event')
-      APN.send(`@${res.by} 收藏了 ${res.status.text}`, deviceToken)
+      APN.send(`@${res.source.screen_name} 收藏了 ${res.object.text}`, deviceToken)
     })
 
     // Del fav
-    process.clients[id].streamer.on('del-fav', res => {
+    process.clients[id].streamer.on('fav.delete', res => {
       log('del-fav event')
-      APN.send(`@${res.by} 取消收藏了 ${res.status.text}`, deviceToken)
+      APN.send(`@${res.source.screen_name} 取消收藏了 ${res.object.text}`, deviceToken)
     })
 
     ctx.body = 'on'
@@ -94,8 +109,10 @@ router.get('/notifier/check', async (ctx, next) => {
   const id = `${deviceToken}${oauthToken}`
 
   if (!(deviceToken && oauthToken)) ctx.body = 'invalid'
-  else if (process.clients[id] && process.clients[id].streamer && process.clients.streamer.isStreaming) {
-    process.clients[id].streamer.renew()
+  else if (process.clients[id] && process.clients[id].streamer) {
+    if (!process.clients.streamer.isStreaming) {
+      process.clients[id].streamer._start()
+    }
     ctx.body = 'on'
   } else ctx.body = 'off'
 })
@@ -109,26 +126,14 @@ app.listen(PORT)
 // Log
 log(chalk.green(`Maofan notifier startup, listening on ${PORT}`))
 
-// Schedule - Check every minute
-process.job1 = schedule.scheduleJob('* * * * *', () => {
+// Schedule - Check every 30 minute
+process.job1 = schedule.scheduleJob('*/30 * * * *', () => {
   for (let key in process.clients) {
     const client = process.clients[key]
     if (client.streamer.isStreaming) {
-      log(` ${symbols.success} ${client.streamer.id} is streaming`)
+      log(` ${symbols.success} ${client.streamer.user.id} is streaming`)
     } else {
-      log(` ${symbols.error} ${client.streamer.id} is not streaming`)
-    }
-  }
-})
-
-process.job2 = schedule.scheduleJob('*/15 * * * *', () => {
-  for (let key in process.clients) {
-    const client = process.clients[key]
-    const {deviceToken} = client.streamer
-    if (client.streamer.isStreaming) {
-      APN.send('[测试消息] Streaming 正常', deviceToken)
-    } else {
-      APN.send('[测试消息] Streaming 断开', deviceToken)
+      log(` ${symbols.error} ${client.streamer.user.id} is not streaming`)
     }
   }
 })
