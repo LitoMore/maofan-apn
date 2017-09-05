@@ -49,7 +49,7 @@ router.post('/notifier/on', koaBody(), async (ctx, next) => {
       oauthToken,
       oauthTokenSecret
     })
-    process.client[id].streamer.start()
+    process.clients[id].streamer.start()
     process.clients[id].user = {
       deviceToken,
       oauthToken,
