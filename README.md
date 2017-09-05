@@ -31,7 +31,7 @@ APN service for Maofan
 | Name | Description |
 | :-: | :-- |
 | device_token | Device token from app as a string |
-| oauth_token_secret | Fanfou OAuth token |
+| oauth_token | Fanfou OAuth token |
 
 ## Related
 
