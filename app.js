@@ -57,31 +57,31 @@ router.post('/notifier/on', koaBody(), async (ctx, next) => {
     // Mentions
     process.clients[id].streamer.on('message.mention', res => {
       log('mention event')
-      APN.send(`@${res.source.screen_name} 提到了你 ${res.object.text}`, deviceToken)
+      APN.send(`@${res.source.screen_name} 提到了你：\n${res.object.text}`, deviceToken)
     })
 
     // Reply
     process.clients[id].streamer.on('message.reply', res => {
       log('reply event')
-      APN.send(`@${res.source.screen_name} 回复了你 ${res.object.text}`, deviceToken)
+      APN.send(`@${res.source.screen_name} 回复了你：\${res.object.text}`, deviceToken)
     })
 
     // Repost
     process.clients[id].streamer.on('message.repost', res => {
       log('repost event')
-      APN.send(`@${res.source.screen_name} 转发了 ${res.object.text}`, deviceToken)
+      APN.send(`@${res.source.screen_name} 转发了：\n${res.object.text}`, deviceToken)
     })
 
     // Add fav
     process.clients[id].streamer.on('fav.create', res => {
       log('add-fav event')
-      APN.send(`@${res.source.screen_name} 收藏了 ${res.object.text}`, deviceToken)
+      APN.send(`@${res.source.screen_name} 收藏了：\n${res.object.text}`, deviceToken)
     })
 
     // Del fav
     process.clients[id].streamer.on('fav.delete', res => {
       log('del-fav event')
-      APN.send(`@${res.source.screen_name} 取消收藏了 ${res.object.text}`, deviceToken)
+      APN.send(`@${res.source.screen_name} 取消收藏了：\n${res.object.text}`, deviceToken)
     })
 
     ctx.body = 'on'
