@@ -25,7 +25,8 @@
     "koa": "^2.3.0",
     "koa-body": "^2.3.0",
     "koa-router": "^7.2.1",
-    "log-symbols": "^2.0.0"
+    "log-symbols": "^2.0.0",
+    "mongoose": "^4.11.11"
   },
   "devDependencies": {
     "standard": "^10.0.3"

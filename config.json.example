@@ -3,5 +3,12 @@
   "CONSUMER_SECRET": "",
   "KEY_ID": "",
   "TEAM_ID": "",
-  "PORT": 3010
+  "PORT": 3010,
+  "DB": {
+    "HOST": "127.0.0.1",
+    "PORT": "27017",
+    "DATABASE": "",
+    "USER": "",
+    "PASS": ""
+  }
 }
