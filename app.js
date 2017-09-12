@@ -6,8 +6,6 @@ const chalk = require('chalk')
 const log = require('fancy-log')
 const koaBody = require('koa-body')
 const Router = require('koa-router')
-const symbols = require('log-symbols')
-const schedule = require('node-schedule')
 
 const Streamer = require('fanfou-streamer')
 const APN = require('./utils/apn')
@@ -125,15 +123,3 @@ app.listen(PORT)
 
 // Log
 log(chalk.green(`Maofan notifier startup, listening on ${PORT}`))
-
-// Schedule - Check every 30 minute
-process.job1 = schedule.scheduleJob('*/30 * * * *', () => {
-  for (let key in process.clients) {
-    const client = process.clients[key]
-    if (client.streamer.isStreaming) {
-      log(` ${symbols.success} ${client.streamer.user.id} is streaming`)
-    } else {
-      log(` ${symbols.error} ${client.streamer.user.id} is not streaming`)
-    }
-  }
-})
