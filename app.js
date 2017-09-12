@@ -63,7 +63,7 @@ router.post('/notifier/on', koaBody(), async (ctx, next) => {
     // Reply
     process.clients[id].streamer.on('message.reply', res => {
       log('reply event')
-      APN.send(`@${res.source.screen_name} 回复了你：\${res.object.text}`, deviceToken)
+      APN.send(`@${res.source.screen_name} 回复了你：\n${res.object.text}`, deviceToken)
     })
 
     // Repost
