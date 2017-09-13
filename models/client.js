@@ -16,7 +16,7 @@ const Client = new Schema({
 }, {minimize: false, timestamps: {createdAt: 'created_at', updatedAt: 'updated_at'}, retainKeyOrder: true})
 
 Client.set('toJSON', {
-  transform (doc, ret, options) {
+  transform (doc, ret) {
     delete ret.__v
     return ret
   }

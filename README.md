@@ -1,5 +1,10 @@
 # maofan-apn
 
+[![](https://badges.greenkeeper.io/LitoMore/maofan-apn.svg)](https://greenkeeper.io/)
+[![](https://img.shields.io/travis/LitoMore/maofan-apn/master.svg)](https://travis-ci.org/LitoMore/maofan-apn)
+[![](https://img.shields.io/github/license/LitoMore/maofan-apn.svg)](https://github.com/LitoMore/maofan-apn/blob/master/LICENSE)
+[![](https://img.shields.io/badge/code_style-XO-5ed9c7.svg)](https://github.com/sindresorhus/xo)
+
 APN service for [Maofan](https://itunes.apple.com/us/app/%E7%8C%AB%E9%A5%AD/id1071730189)
 
 ## API
@@ -36,6 +41,11 @@ APN service for [Maofan](https://itunes.apple.com/us/app/%E7%8C%AB%E9%A5%AD/id10
 ## Related
 
 - [fanfou-streamer](https://github.com/LitoMore/fanfou-streamer) - Fanfou Streaming SDK for Node.js
+
+## Maintainers
+
+- [LitoMore](https://github.com/LitoMore)
+- [mogita](https://github.com/mogita)
 
 ## License
 

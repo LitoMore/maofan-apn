@@ -7,12 +7,12 @@ const log = require('fancy-log')
 const koaBody = require('koa-body')
 const Router = require('koa-router')
 const mongoose = require('mongoose')
-
 const Streamer = require('fanfou-streamer')
+
 const APN = require('./utils/apn')
 const ClientModel = require('./models/client')
-
 const config = require('./config')
+
 const {
   PORT,
   CONSUMER_KEY,
@@ -23,7 +23,7 @@ const {
 // Database connection
 // =========================
 const database = `mongodb://${config.DB.HOST}:${config.DB.PORT}/${config.DB.DATABASE}`
-let connOptions = {
+const connOptions = {
   useMongoClient: true
 }
 // Attach user and pass info if present to operate on the secured collection
@@ -36,7 +36,7 @@ mongoose.connect(database, connOptions)
 mongoose.connection.on('connected', () => {
   console.log(`Database connected to ${database}`)
 })
-mongoose.connection.on('error', (err) => {
+mongoose.connection.on('error', err => {
   console.log(`Database connection to ${database} error: ${err}`)
 })
 mongoose.connection.on('disconnected', () => {
@@ -99,15 +99,17 @@ function createStreamer (id, deviceToken, oauthToken, oauthTokenSecret) {
 }
 
 // Restore all existing states from DB
-(async function restoreClients () {
+(async function () {
   let result
   try {
     result = await ClientModel.find()
   } catch (err) {
     log(`Failed to find client states from DB: ${err.toString()}`)
   }
-  if (!Array.isArray(result)) return false
-  for (let client of result) {
+  if (!Array.isArray(result)) {
+    return false
+  }
+  for (const client of result) {
     createStreamer(
       client.clientId,
       client.deviceToken,
@@ -122,7 +124,7 @@ const app = new Koa()
 const router = new Router()
 
 // Router
-router.post('/notifier/on', koaBody(), async (ctx, next) => {
+router.post('/notifier/on', koaBody(), async ctx => {
   log('POST /notifier/on')
   const deviceToken = ctx.request.body.device_token
   const oauthToken = ctx.request.body.oauth_token
@@ -158,33 +160,39 @@ router.post('/notifier/on', koaBody(), async (ctx, next) => {
   }
 })
 
-router.post('/notifier/off', koaBody(), async (ctx, next) => {
+router.post('/notifier/off', koaBody(), async ctx => {
   const deviceToken = ctx.request.body.device_token
   const oauthToken = ctx.request.body.oauth_token
   const id = `${deviceToken}${oauthToken}`
 
-  if (!(deviceToken && oauthToken)) ctx.body = 'invalid'
-  else if (process.clients[id] && process.clients[id].streamer && process.clients[id].streamer.isStreaming) {
+  if (!(deviceToken && oauthToken)) {
+    ctx.body = 'invalid'
+  } else if (process.clients[id] && process.clients[id].streamer && process.clients[id].streamer.isStreaming) {
     process.clients[id].streamer.stop()
     delete process.clients[id]
     ctx.body = 'off'
-  } else ctx.body = 'off'
+  } else {
+    ctx.body = 'off'
+  }
   // Remove the client from DB
   await ClientModel.deleteByClientId(id)
 })
 
-router.get('/notifier/check', async (ctx, next) => {
+router.get('/notifier/check', async ctx => {
   const deviceToken = ctx.query.device_token
   const oauthToken = ctx.query.oauth_token
   const id = `${deviceToken}${oauthToken}`
 
-  if (!(deviceToken && oauthToken)) ctx.body = 'invalid'
-  else if (process.clients[id] && process.clients[id].streamer) {
+  if (!(deviceToken && oauthToken)) {
+    ctx.body = 'invalid'
+  } else if (process.clients[id] && process.clients[id].streamer) {
     if (!process.clients.streamer.isStreaming) {
       process.clients[id].streamer._start()
     }
     ctx.body = 'on'
-  } else ctx.body = 'off'
+  } else {
+    ctx.body = 'off'
+  }
 })
 
 app

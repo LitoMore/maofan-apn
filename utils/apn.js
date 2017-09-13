@@ -31,11 +31,11 @@ APN.send = (message, deviceToken) => {
   apnProvider
     .send(note, deviceToken)
     .then(result => {
-      if (!result.failed.length) {
-        log(` ${symbols.success} ${deviceToken} sent.`)
-      } else {
+      if (result.failed.length > 0) {
         log(` ${symbols.error} ${deviceToken} error.`)
         console.log(result.failed)
+      } else {
+        log(` ${symbols.success} ${deviceToken} sent.`)
       }
       apnProvider.shutdown()
     })

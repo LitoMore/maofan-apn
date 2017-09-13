@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
-    "test": "standard"
+    "test": "xo"
   },
   "repository": {
     "type": "git",
@@ -29,6 +29,14 @@
     "mongoose": "^4.11.11"
   },
   "devDependencies": {
-    "standard": "^10.0.3"
+    "xo": "^0.18.2"
+  },
+  "xo": {
+    "rules": {
+      "import/no-unresolved": 0,
+      "space-before-function-paren": ["error", "always"]
+    },
+    "semicolon": false,
+    "space": 2
   }
 }
