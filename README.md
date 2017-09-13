@@ -2,10 +2,11 @@
 
 [![](https://badges.greenkeeper.io/LitoMore/maofan-apn.svg)](https://greenkeeper.io/)
 [![](https://img.shields.io/travis/LitoMore/maofan-apn/master.svg)](https://travis-ci.org/LitoMore/maofan-apn)
+[![](https://raw.github.com/LitoMore/badges/master/badges/maofan.svg?sanitize=true)](https://itunes.apple.com/us/app/%E7%8C%AB%E9%A5%AD/id1071730189)
 [![](https://img.shields.io/github/license/LitoMore/maofan-apn.svg)](https://github.com/LitoMore/maofan-apn/blob/master/LICENSE)
 [![](https://img.shields.io/badge/code_style-XO-5ed9c7.svg)](https://github.com/sindresorhus/xo)
 
-APN service for [Maofan](https://itunes.apple.com/us/app/%E7%8C%AB%E9%A5%AD/id1071730189)
+APN service for Maofan
 
 ## API
 
