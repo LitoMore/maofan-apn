@@ -34,7 +34,10 @@
   "xo": {
     "rules": {
       "import/no-unresolved": 0,
-      "space-before-function-paren": ["error", "always"]
+      "space-before-function-paren": [
+        "error",
+        "always"
+      ]
     },
     "semicolon": false,
     "space": 2
