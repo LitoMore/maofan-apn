@@ -102,6 +102,18 @@ function createStreamer (id, deviceToken, oauthToken, oauthTokenSecret) {
     log('dm-create event')
     APN.send(`@${res.source.screen_name} 私信了你：\n${res.object.text}`, deviceToken)
   })
+
+  // Create friends
+  process.clients[id].streamer.on('friends.create', res => {
+    log('friends-create event')
+    APN.send(`@${res.source.srceen_name} 关注了你`)
+  })
+
+  // Request friends
+  process.clients[id].streamer.on('friends.request', res => {
+    log('friends-request event')
+    APN.send(`@${res.source.screen_name} 请求关注你`)
+  })
 }
 
 // Restore all existing states from DB
