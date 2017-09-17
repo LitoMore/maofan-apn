@@ -96,6 +96,12 @@ function createStreamer (id, deviceToken, oauthToken, oauthTokenSecret) {
     log('del-fav event')
     APN.send(`@${res.source.screen_name} 取消收藏了：\n${res.object.text}`, deviceToken)
   })
+
+  // Create direct message
+  process.clients[id].streamer.on('dm.create', res => {
+    log('dm-create event')
+    APN.send(`@${res.source.screen_name} 私信了你：\n${res.object.text}`, deviceToken)
+  })
 }
 
 // Restore all existing states from DB
