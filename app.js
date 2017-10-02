@@ -153,8 +153,11 @@ router.post('/notifier/on', koaBody(), async ctx => {
   if (!(deviceToken && oauthToken && oauthTokenSecret)) {
     log('invalid parameters')
     ctx.body = 'invalid'
-  } else if (process.clients[id] && process.clients[id].streamer && process.clients[id].streamer.isStreaming) {
-    log('streamer already on')
+  } else if (process.clients[id] && process.clients[id].streamer) {
+    log('streamer already exists')
+    if (!process.clients[id].streamer.isStreaming) {
+      process.clients[id].streamer.start()
+    }
     ctx.body = 'on'
   } else {
     log('create streamer')

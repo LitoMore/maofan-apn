@@ -9,7 +9,7 @@ mongoose.Promise = global.Promise
 const Schema = mongoose.Schema
 
 const Client = new Schema({
-  clientId: {type: String, required: true, index: true},
+  clientId: {type: String, required: true, index: {unique: true}},
   deviceToken: {type: String, required: true},
   oauthToken: {type: String, required: true},
   oauthTokenSecret: {type: String, required: true}
