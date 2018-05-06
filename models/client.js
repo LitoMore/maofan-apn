@@ -6,7 +6,7 @@
 const mongoose = require('mongoose')
 
 mongoose.Promise = global.Promise
-const Schema = mongoose.Schema
+const {Schema} = mongoose
 
 const Client = new Schema({
   clientId: {type: String, required: true, index: {unique: true}},

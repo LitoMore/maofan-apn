@@ -29,7 +29,7 @@
     "mongoose": "^5.0.0"
   },
   "devDependencies": {
-    "xo": "^0.20.0"
+    "xo": "^0.21.0"
   },
   "xo": {
     "rules": {
