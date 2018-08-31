@@ -18,18 +18,18 @@
   },
   "homepage": "https://github.com/LitoMore/maofan-apn#readme",
   "dependencies": {
-    "apn": "^2.1.5",
-    "chalk": "^2.1.0",
+    "apn": "^2.2.0",
+    "chalk": "^2.4.1",
     "fancy-log": "^1.3.0",
     "fanfou-streamer": "0.2.1",
-    "koa": "^2.3.0",
-    "koa-body": "^4.0.0",
-    "koa-router": "^7.2.1",
-    "log-symbols": "^2.0.0",
-    "mongoose": "^5.0.0"
+    "koa": "^2.5.2",
+    "koa-body": "^4.0.4",
+    "koa-router": "^7.4.0",
+    "log-symbols": "^2.2.0",
+    "mongoose": "^5.2.6"
   },
   "devDependencies": {
-    "xo": "^0.21.0"
+    "xo": "^0.22.0"
   },
   "xo": {
     "rules": {
