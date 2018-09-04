@@ -199,7 +199,7 @@ router.post('/notifier/off', koaBody(), async ctx => {
   await ClientModel.deleteByClientId(id)
 })
 
-router.get('/notifier/check', async ctx => {
+router.get('/notifier/check', ctx => {
   const deviceToken = ctx.query.device_token
   const oauthToken = ctx.query.oauth_token
   const id = `${deviceToken}${oauthToken}`

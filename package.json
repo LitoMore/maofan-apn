@@ -29,7 +29,7 @@
     "mongoose": "^5.2.6"
   },
   "devDependencies": {
-    "xo": "^0.22.0"
+    "xo": "^0.23.0"
   },
   "xo": {
     "rules": {
@@ -37,6 +37,12 @@
       "space-before-function-paren": [
         "error",
         "always"
+      ],
+      "unicorn/catch-error-name": [
+        "error",
+        {
+          "name": "err"
+        }
       ]
     },
     "semicolon": false,
