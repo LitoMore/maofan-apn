@@ -37,6 +37,7 @@ APN.send = (message, deviceToken) => {
       } else {
         log(` ${symbols.success} ${deviceToken} sent.`)
       }
+
       apnProvider.shutdown()
     })
 }

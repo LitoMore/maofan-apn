@@ -124,9 +124,11 @@ function createStreamer (id, deviceToken, oauthToken, oauthTokenSecret) {
   } catch (err) {
     log(`Failed to find client states from DB: ${err.toString()}`)
   }
+
   if (!Array.isArray(result)) {
     return false
   }
+
   for (const client of result) {
     createStreamer(
       client.clientId,
@@ -158,6 +160,7 @@ router.post('/notifier/on', koaBody(), async ctx => {
     if (!process.clients[id].streamer.isStreaming) {
       process.clients[id].streamer.start()
     }
+
     ctx.body = 'on'
   } else {
     log('create streamer')
@@ -174,6 +177,7 @@ router.post('/notifier/on', koaBody(), async ctx => {
     } catch (err) {
       log(`Failed to save Client state to DB: ${err.toString()}`)
     }
+
     // Start a streamer
     createStreamer(id, deviceToken, oauthToken, oauthTokenSecret)
 
@@ -195,6 +199,7 @@ router.post('/notifier/off', koaBody(), async ctx => {
   } else {
     ctx.body = 'off'
   }
+
   // Remove the client from DB
   await ClientModel.deleteByClientId(id)
 })
@@ -210,6 +215,7 @@ router.get('/notifier/check', ctx => {
     if (!process.clients.streamer.isStreaming) {
       process.clients[id].streamer._start()
     }
+
     ctx.body = 'on'
   } else {
     ctx.body = 'off'
