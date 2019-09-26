@@ -172,6 +172,9 @@ router.post('/notifier/on', koaBody(), async ctx => {
       oauthTokenSecret
     }
     const dbHandle = new ClientModel(dbParams)
+
+    ctx.body = 'on'
+
     try {
       await dbHandle.save()
     } catch (err) {
@@ -180,8 +183,6 @@ router.post('/notifier/on', koaBody(), async ctx => {
 
     // Start a streamer
     createStreamer(id, deviceToken, oauthToken, oauthTokenSecret)
-
-    ctx.body = 'on'
   }
 })
 

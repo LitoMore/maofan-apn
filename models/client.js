@@ -27,7 +27,7 @@ Client.statics.findByClientId = async function (clientId) {
   try {
     result = await this.model('Client').findOne({clientId}).exec()
     return result
-  } catch (err) {
+  } catch (_) {
     return null
   }
 }
