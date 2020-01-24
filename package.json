@@ -24,7 +24,7 @@
     "fanfou-streamer": "0.2.1",
     "koa": "^2.5.2",
     "koa-body": "^4.0.4",
-    "koa-router": "^7.4.0",
+    "koa-router": "^8.0.6",
     "log-symbols": "^3.0.0",
     "mongoose": "^5.2.6"
   },
