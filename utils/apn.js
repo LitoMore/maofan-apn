@@ -22,24 +22,21 @@ const options = {
 
 // APN Provider
 
-APN.send = (message, deviceToken) => {
+APN.send = async (message, deviceToken) => {
   const apnProvider = new apn.Provider(options)
   const note = new apn.Notification()
   note.badge = 0
   note.topic = 'me.catt.maofan'
   note.alert = message
-  apnProvider
-    .send(note, deviceToken)
-    .then(result => {
-      if (result.failed.length > 0) {
-        log(` ${symbols.error} ${deviceToken} error.`)
-        console.log(result.failed)
-      } else {
-        log(` ${symbols.success} ${deviceToken} sent.`)
-      }
+  const result = await apnProvider.send(note, deviceToken)
+  if (result.failed.length > 0) {
+    log(` ${symbols.error} ${deviceToken} error.`)
+    console.log(result.failed)
+  } else {
+    log(` ${symbols.success} ${deviceToken} sent.`)
+  }
 
-      apnProvider.shutdown()
-    })
+  apnProvider.shutdown()
 }
 
 module.exports = APN
